@@ -1,5 +1,36 @@
-"""
+def matching(users, payments, prices):
+    prices_dict = {price[0]: int(price[1]) for price in prices}
 
+    def calc_total(price_type, quantity):
+        return prices_dict[price_type] * quantity
+
+    results = {}
+    matched_payments = set()
+    matched_users = set()
+
+    for user in users:
+        user_name, user_email, user_price_type, user_quantity = user
+        for payment_id, payment_email, payment_amount in payments:
+            if user_email == payment_email:
+                results[int(payment_id)] = user_name
+                matched_payments.add(int(payment_id))
+                matched_users.add(user_name)
+                break
+
+    unmatched_users = [user for user in users if user[0] not in matched_users]
+    for payment_id, payment_email, payment_amount in payments:
+        if int(payment_id) not in matched_payments:
+            for user in unmatched_users:
+                user_name, user_email, user_price_type, user_quantity = user
+                total_amount = calc_total(user_price_type, int(user_quantity))
+                if total_amount == int(payment_amount):
+                    results[int(payment_id)] = user_name
+                    break
+
+    return results
+
+
+"""
 You are working on an accounting program for an event's ticketing system.
 
 At the end of the day, all the payments received from the payment gateway have to be matched with the users who bought the tickets. There is always a 1-to-1 match between the users and the payments.
@@ -30,7 +61,8 @@ Users:
 
 Payment Gateway:
 -----------------------------------
-| ID | Email             | Amount |
+| ID | Email
+| Amount |
 -----------------------------------
 |  1 |    john2@mail.com |     33 |
 |  2 | michelle@mail.com |     60 |
@@ -84,53 +116,3 @@ U = number of users or payments
 T = number ticket prices
 
 """
-
-users = [
-	["John A.", "john.a@mail.com", "Top", "3"],
-	["James S.", "j.s@mail.com", "Economy", "2"],
-	["Stacy C.", "stacy.c@test.com", "Economy", "2"],
-	["Bobby B.", "bob@mail.com", "Medium", "10"],
-	["Michelle X.", "mix@test.com", "Medium", "10"],
-	["Linda F.", "l.f@mail.com", "Top", "10"],
-	["Betty T.", "b.t@mail.com", "ThreeEco", "1"],
-	["Nancy L.", "n.l@test.com", "TwoEco", "1"],
-	["Daniel O.", "d.o@mail.com", "OneEco", "1"],
-	["Mike E.", "m.e@mail.com", "FourEco", "1"],
-	["Matthew R.", "mr@test.com", "OneEco", "5"],
-	["Albert K.", "albert@test.com", "OneEco", "5"]
-]
-
-payments = [
-	["1", "john2@mail.com", "33"],
-	["2", "michelle@mail.com", "60"],
-	["4", "james@mail.com", "8"],
-	["3", "stacy.c@test.com", "8"],
-	["5", "bob@mail.com", "60"],
-	["6", "email not found", "110"],
-	["7", "email not found", "1"],
-	["8", "email not found", "2"],
-	["9", "email not found", "3"],
-	["99", "email not found", "4"],
-	["10", "mr@test.com", "5"],
-	["11", "a@mail.com", "5"]
-]
-
-prices = [
-	["Economy", "4"],
-	["Top", "11"],
-	["Medium", "6"],
-	["OneEco", "1"],
-	["TwoEco", "2"],
-	["ThreeEco", "3"],
-	["FourEco", "4"]
-]
-
-
-def matching(users,payments,prices):
-    for item in users:
-        print(item)
-
-
-
-print(matching(users, payments, prices))
-
