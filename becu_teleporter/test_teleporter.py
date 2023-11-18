@@ -1,5 +1,5 @@
 import pytest
-from teleporter import destinations, destinations_orig
+from teleporter import destinations, destinations_orig, destinations_orig_2, destinations_2, destinations_orig_ugly
 
 teleporters_1 = ["3,1", "4,2", "5,10"]
 teleporters_2 = ["5,10", "6,22", "39,40", "40,49", "47,29"]
@@ -19,3 +19,6 @@ teleporters_5 = ["3,8", "8,9", "9,3"]
 def test_teleporter(teleporter, die_sides, start_pos, last_square, expected):
     assert sorted(destinations(teleporter, die_sides, start_pos, last_square)) == sorted(expected)
     assert sorted(destinations_orig(teleporter, die_sides, start_pos, last_square)) == sorted(expected)
+    assert sorted(destinations_orig_2(teleporter, die_sides, start_pos, last_square)) == sorted(expected)
+    assert sorted(destinations_2(teleporter, die_sides, start_pos, last_square)) == sorted(expected)
+    assert sorted(destinations_orig_ugly(teleporter, die_sides, start_pos, last_square)) == sorted(expected)

@@ -11,6 +11,32 @@ def destinations(teleporters, die_sides, start_pos, last_square):
     return sorted(visited_destinations)
 
 
+def destinations_2(teleporters, die_sides, start_pos, last_square):
+    teleporter_dict = {int(from_square): int(to_square) for from_square, to_square in (pair.split(',') for pair in teleporters)}
+    visited_destinations = set()
+
+    for roll in range(1, min(die_sides + 1, last_square - start_pos + 1)):
+        square = start_pos + roll
+        visited_destinations.add(teleporter_dict.get(square, square))
+
+    return sorted(visited_destinations)
+
+
+def destinations_orig_ugly(teleporters, die_sides, start_pos, last_square):
+    teleporters_dict = {int(pair.split(',')[0]): int(pair.split(',')[1]) for pair in teleporters}
+    return set(teleporters_dict.get(square, square) for square in range(start_pos + 1, min(start_pos + die_sides + 1, last_square + 1)))
+
+
+def destinations_orig_2(teleporters, die_sides, start_pos, last_square):
+    visited_destinations = set()
+    teleporters_dict = {int(pair.split(',')[0]): int(pair.split(',')[1]) for pair in teleporters}
+
+    for square in range(start_pos + 1, min(start_pos + die_sides + 1, last_square + 1)):
+        visited_destinations.add(teleporters_dict.get(square, square))
+
+    return visited_destinations
+
+
 def destinations_orig(teleporter, die_sides, start_pos, last_square):
     visited_destinations = set()
     teleporters = {int(pair.split(',')[0]): int(pair.split(',')[1]) for pair in teleporter}
