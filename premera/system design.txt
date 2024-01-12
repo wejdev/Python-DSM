@@ -1,0 +1,46 @@
+There are three jobs which upload certain types of files in a folder.
+
+For example, Patient (*. Patient), Diagnosis Info (*.Diagnosis) and Claims (*.Claim) files get uploaded into folder “PremeraPatientEncounter”.
+
+Your task is to wait till all types of files are received for a given patient, then read all files and create one single “PatientEncounter” object which includes Patient Demographic, Diagnosis and Claim info. Make sure you map diagnosis and claim info to the correct patient, otherwise your organization may face a lawsuit.
+
+If you receive partial data (just ABC.Patient and ABC.Diagnosis files with no claim file) then wait 24hr then move patient data to different location.
+
+Provide daily reports of complete and partial record information received by patients.
+
+Please provide a rough design. Write code in any language or pseudo code to read files and construct PatientEncounter object. Show how you will generate daily reports.
+
+(fn) PatientUploader (http trigger)
+    Copy file to data lake (folder name based on ID)
+    Post message to PatientEncounterQueue(patientFileUploaded, patientId)
+DiagnosisUploader
+ClaimsUploader
+
+(fn) FileExistValidator (blob trigger)
+    Check if all 3 files exist for a given patient
+        If yes, read files from storage and call PatientEncounterConsolidator(patientId)
+                write success(patientId) to database
+        If no, post message to PatientEncounterRetryQueue(allFilesDoNotExist, patientId)
+
+
+(fn) PatientEncounterConsolidator (http trigger)
+    Read all files for a given patient
+    Create PremeraPatientEncounter object
+    Write PremeraPatientEncounter object to storage
+    Post message to PatientEncounterQueue(patientEncounterCreated, patientId)
+
+
+/PremeraPatientEncounter/{patientId}
+
+
+/PremeraPatientEncounter/2343-23432-2343343-3234/2343-23432-2343343-3234.patient
+                        /2343-23432-2343343-3234/2343-23432-2343343-3234.diagnosis
+                        /2343-23432-2343343-3234/2343-23432-2343343-3234.claim
+
+                        /2343-23432-2343343-3234/2343-23432-2343343-3234.patientEncounter
+
+
+/PremeraPatientEncounter/2343-23432-2343343-3234/2343-23432-2343343-3234.patient
+                        /2343-23432-2343343-3234/2343-23432-2343343-3234.diagnosis
+
+
